@@ -17,9 +17,9 @@ Jeweler::Tasks.new do |gem|
   gem.name = "mongoid-openid-store"
   gem.homepage = "http://github.com/attachmentsme/mongoid-openid-store"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
-  gem.email = "millerjesse@gmail.com"
+  gem.summary = %Q{OpenID Store using Mongoid}
+  gem.description = %Q{OpendID Store using Mongoid}
+  gem.email = "jesse@attachments.me"
   gem.authors = ["Jesse Miller"]
   # dependencies defined in Gemfile
 end
