@@ -2,6 +2,26 @@
 
 An OpenID Store that uses Mongoid. This was completely taken from Alex Young's post here: http://alexyoung.org/2010/09/28/openid-japan/ so full credits go to him. We just thought it deserved a repository so fixes could be put against one place.
 
+## Installing
+
+Add to your `Gemfile`:
+
+```ruby
+gem 'mongoid-openid-store'
+```
+
+Then `bundle install`.
+
+## Usage
+
+In your initializer, replace your instance of FileStore with an instance of MongoidStore.
+
+```ruby
+use OmniAuth::Builder do
+  provider :open_id, :store => OpenID::Store::MongoidStore.new
+end
+```
+
 ## Contributing to mongoid-openid-store
  
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
