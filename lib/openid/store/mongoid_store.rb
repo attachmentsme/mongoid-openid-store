@@ -40,9 +40,9 @@ module OpenID::Store
 
     def get_association(server_url, handle = nil)
       assocs = if handle.blank?
-        Association.find :all, :conditions => { :server_url => server_url }
+        Association.where(:server_url => server_url)
       else
-        Association.find :all, :conditions => { :server_url => server_url, :handle => handle }
+        Association.where(:server_url => server_url, :handle => handle)
       end
 
       assocs.reverse.each do |assoc|
@@ -58,13 +58,13 @@ module OpenID::Store
     end
 
     def remove_association(server_url, handle)
-      Association.find(:all, :conditions => { :server_url => server_url, :handle => handle }).each do |assoc|
+      Association.where(:server_url => server_url, :handle => handle).each do |assoc|
         assoc.destroy!
       end
     end
 
     def use_nonce(server_url, timestamp, salt)
-      return false if Nonce.find(:first, :conditions => { :server_url => server_url, :timestamp => timestamp, :salt => salt})
+      return false if Nonce.count(:server_url => server_url, :timestamp => timestamp, :salt => salt) > 0
       return false if (timestamp - Time.now.to_i).abs > OpenID::Nonce.skew
       Nonce.create(:server_url => server_url, :timestamp => timestamp, :salt => salt)
       return true
