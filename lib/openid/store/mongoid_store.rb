@@ -3,7 +3,7 @@ require 'openid/store/interface'
 module OpenID::Store
   class Association 
     include Mongoid::Document
-    field :secret, :type => Binary
+    field :secret, :type => Moped::BSON::Binary
 
     def from_record
       OpenID::Association.new(handle, secret.to_s, issued, lifetime, assoc_type)
