@@ -32,7 +32,7 @@ module OpenID::Store
       # due to character encoding
       Association.create(:server_url => server_url,
                          :handle     => assoc.handle,
-                         :secret     => BSON::Binary.new(assoc.secret),
+                         :secret     => Moped::BSON::Binary.new(:generic, assoc.secret),
                          :issued     => assoc.issued,
                          :lifetime   => assoc.lifetime,
                          :assoc_type => assoc.assoc_type)
