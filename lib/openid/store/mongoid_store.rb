@@ -64,7 +64,7 @@ module OpenID::Store
     end
 
     def use_nonce(server_url, timestamp, salt)
-      return false if Nonce.count(:server_url => server_url, :timestamp => timestamp, :salt => salt) > 0
+      return false if Nonce.where(:server_url => server_url, :timestamp => timestamp, :salt => salt).count > 0
       return false if (timestamp - Time.now.to_i).abs > OpenID::Nonce.skew
       Nonce.create(:server_url => server_url, :timestamp => timestamp, :salt => salt)
       return true
