@@ -3,7 +3,7 @@ require 'openid/store/interface'
 module OpenID::Store
   class Association 
     include Mongoid::Document
-    field :secret, :type => Binary
+    field :secret, :type => Moped::BSON::Binary
 
     def from_record
       OpenID::Association.new(handle, secret.to_s, issued, lifetime, assoc_type)
@@ -32,7 +32,7 @@ module OpenID::Store
       # due to character encoding
       Association.create(:server_url => server_url,
                          :handle     => assoc.handle,
-                         :secret     => BSON::Binary.new(assoc.secret),
+                         :secret     => Moped::BSON::Binary.new(:generic, assoc.secret),
                          :issued     => assoc.issued,
                          :lifetime   => assoc.lifetime,
                          :assoc_type => assoc.assoc_type)
@@ -40,9 +40,9 @@ module OpenID::Store
 
     def get_association(server_url, handle = nil)
       assocs = if handle.blank?
-        Association.find :all, :conditions => { :server_url => server_url }
+        Association.where(:server_url => server_url)
       else
-        Association.find :all, :conditions => { :server_url => server_url, :handle => handle }
+        Association.where(:server_url => server_url, :handle => handle)
       end
 
       assocs.reverse.each do |assoc|
@@ -58,13 +58,13 @@ module OpenID::Store
     end
 
     def remove_association(server_url, handle)
-      Association.find(:all, :conditions => { :server_url => server_url, :handle => handle }).each do |assoc|
+      Association.where(:server_url => server_url, :handle => handle).each do |assoc|
         assoc.destroy!
       end
     end
 
     def use_nonce(server_url, timestamp, salt)
-      return false if Nonce.find(:first, :conditions => { :server_url => server_url, :timestamp => timestamp, :salt => salt})
+      return false if Nonce.where(:server_url => server_url, :timestamp => timestamp, :salt => salt).count > 0
       return false if (timestamp - Time.now.to_i).abs > OpenID::Nonce.skew
       Nonce.create(:server_url => server_url, :timestamp => timestamp, :salt => salt)
       return true
